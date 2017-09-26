@@ -403,6 +403,34 @@ class Organization(github.GithubObject.CompletableGithubObject):
         )
         return github.Team.Team(self._requester, headers, data, completed=True)
 
+    def create_hook(self, name, config, events=github.GithubObject.NotSet, active=github.GithubObject.NotSet):
+        """
+        :calls: `POST /org/:org/:repo/hooks <http://developer.github.com/v3/repos/hooks>`_
+        :param name: string
+        :param config: dict
+        :param events: list of string
+        :param active: bool
+        :rtype: :class:`github.Hook.Hook`
+        """
+        assert isinstance(name, (str, unicode)), name
+        assert isinstance(config, dict), config
+        assert events is github.GithubObject.NotSet or all(isinstance(element, (str, unicode)) for element in events), events
+        assert active is github.GithubObject.NotSet or isinstance(active, bool), active
+        post_parameters = {
+            "name": name,
+            "config": config,
+        }
+        if events is not github.GithubObject.NotSet:
+            post_parameters["events"] = events
+        if active is not github.GithubObject.NotSet:
+            post_parameters["active"] = active
+        headers, data = self._requester.requestJsonAndCheck(
+            "POST",
+            self.url + "/hooks",
+            input=post_parameters
+        )
+        return github.Hook.Hook(self._requester, headers, data, completed=True)
+
     def edit(self, billing_email=github.GithubObject.NotSet, blog=github.GithubObject.NotSet, company=github.GithubObject.NotSet, email=github.GithubObject.NotSet, location=github.GithubObject.NotSet, name=github.GithubObject.NotSet):
         """
         :calls: `PATCH /orgs/:org <http://developer.github.com/v3/orgs>`_
