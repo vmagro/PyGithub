@@ -610,6 +610,18 @@ class Organization(github.GithubObject.CompletableGithubObject):
             None
         )
 
+    def get_hooks(self):
+        """
+        :calls `GET /orgs/:org/hooks <https://developer.github.com/v3/orgs/hooks>`_
+        :rtype :class:`github.PaginatedList.PaginatedList` of :class:`github.Hook.Hook`
+        """
+        return github.PaginatedList.PaginatedList(
+            github.Hook.Hook,
+            self._requester,
+            self.url + "/hooks",
+            None
+        )
+
     def has_in_members(self, member):
         """
         :calls: `GET /orgs/:org/members/:user <http://developer.github.com/v3/orgs/members>`_
